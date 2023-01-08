@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity 0.5.10;
+pragma solidity ^0.8;
 
 contract AddressBook {
 
@@ -23,9 +23,15 @@ contract AddressBook {
     //adds address to your list of addresses in the _addresses map.
     //Uses push since it is an array
     //adds your address, address and alias to the _aliases map
-    function addAddress(address addr, string memory alia) public {
-        _addresses[msg.sender].push(addr);
-        _aliases[msg.sender][addr] = alia;
+    function addAddress(address addr, string memory alia) public{
+        if (bytes(_aliases[msg.sender][addr]).length == 0){            
+            _addresses[msg.sender].push(addr);
+            _aliases[msg.sender][addr] = alia;
+        }
+
+
+            
+    
     }
 
     function removeAddress(address addr) public {
@@ -43,10 +49,9 @@ contract AddressBook {
                     _addresses[msg.sender][i] = _addresses[msg.sender][length-1];
                 }
 
-                // delete the item we just swapped from
-                delete _addresses[msg.sender][length-1];
+
                 //then decrement the length of the array by 1
-                _addresses[msg.sender].length--;
+                _addresses[msg.sender].pop();
                 //delete the alias for it
                 delete _aliases[msg.sender][addr];
                 //_state[msg.sender]++;
@@ -57,6 +62,8 @@ contract AddressBook {
 
     //Gets the alias for your address
     function getAlias(address addrowner, address addr) public view returns (string memory) {
-        return _aliases[addrowner][addr];
+        return (_aliases[addrowner][addr]);
     } 
+
+    
 }
